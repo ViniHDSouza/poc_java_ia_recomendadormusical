@@ -1,0 +1,47 @@
+spring:
+  application:
+    name: poc_java_ia_recomendadormusical
+  config:
+    # Permite usar um arquivo .env simples (KEY=value) na raiz.
+    import: optional:file:.env[.properties]
+
+server:
+  port: ${SERVER_PORT:8080}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+
+app:
+  openrouter:
+    api-key: ${OPENROUTER_API_KEY:}
+    model: ${OPENROUTER_MODEL:arcee-ai/trinity-large-preview:free}
+    base-url: ${OPENROUTER_BASE_URL:https://openrouter.ai/api/v1}
+    http-referer: ${OPENROUTER_HTTP_REFERER:http://localhost:8080}
+    x-title: ${OPENROUTER_X_TITLE:poc_java_ia_recomendadormusical}
+    provider-sort-by: ${OPENROUTER_PROVIDER_SORT_BY:throughput}
+    provider-partition: ${OPENROUTER_PROVIDER_PARTITION:none}
+    temperature: ${OPENROUTER_TEMPERATURE:0.7}
+    timeout-seconds: ${OPENROUTER_TIMEOUT_SECONDS:90}
+    max-retries: ${OPENROUTER_MAX_RETRIES:2}
+    log-requests: ${OPENROUTER_LOG_REQUESTS:false}
+    log-responses: ${OPENROUTER_LOG_RESPONSES:false}
+  memory:
+    max-messages-before-summary: ${MAX_MESSAGES_BEFORE_SUMMARY:6}
+    sqlite-preferences-path: ${SQLITE_PREFERENCES_PATH:./data/preferences.db}
+  postgres:
+    host: ${POSTGRES_HOST:localhost}
+    port: ${POSTGRES_PORT:5432}
+    database: ${POSTGRES_DATABASE:song_recommender}
+    user: ${POSTGRES_USER:postgres}
+    password: ${POSTGRES_PASSWORD:mysecretpassword}
+
+  langsmith:
+    # Compatibilidade: aceita tanto LANGSMITH_TRACING quanto o antigo LANGCHAIN_TRACING_V2 do projeto JS.
+    tracing-enabled: ${LANGSMITH_TRACING:${LANGCHAIN_TRACING_V2:false}}
+    api-key: ${LANGSMITH_API_KEY:}
+    project: ${LANGSMITH_PROJECT:${LANGCHAIN_PROJECT:04-song-highlights-java}}
+    otlp-endpoint: ${LANGSMITH_OTLP_ENDPOINT:https://api.smith.langchain.com/otel/v1/traces}
+    service-name: ${LANGSMITH_SERVICE_NAME:poc_java_ia_recomendadormusical}
